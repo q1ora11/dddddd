@@ -1,0 +1,160 @@
+#include "stdafx.h"
+#include <iostream>
+using namespace std;
+class Set {
+private:
+	int* data;
+	int size;
+
+public:
+	
+	Set(int s = 0) {
+		size = s;
+		data = (s > 0) ? new int[size] : nullptr;
+	}
+
+	
+	Set(const Set& other) {
+		size = other.size;
+		data = (size > 0) ? new int[size] : nullptr;
+		for (int i = 0; i < size; i++) {
+			data[i] = other.data[i];
+		}
+	}
+
+	
+	Set& operator=(const Set& other) {
+		if (this != &other) {
+			delete[] data;
+			size = other.size;
+			data = (size > 0) ? new int[size] : nullptr;
+			for (int i = 0; i < size; i++) {
+				data[i] = other.data[i];
+			}
+		}
+		return *this;
+	}
+
+	
+	~Set() {
+		delete[] data;
+	}
+
+	
+	void input() {
+		cout << "Введите элементы множества:\n";
+		for (int i = 0; i < size; i++) {
+			cin >> data[i];
+		}
+	}
+
+	
+	void show() {
+		cout << "{ ";
+		for (int i = 0; i < size; i++) {
+			cout << data[i] << " ";
+		}
+		cout << "}\n";
+	}
+
+	
+	bool operator>(int value) {
+		for (int i = 0; i < size; i++) {
+			if (data[i] == value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	Set operator*(Set& other) {
+		int commonCount = 0;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < other.size; j++) {
+				if (data[i] == other.data[j]) {
+					commonCount++;
+					break; 
+				}
+			}
+		}
+
+		
+		Set temp(commonCount);
+
+		
+		int k = 0;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < other.size; j++) {
+				if (data[i] == other.data[j]) {
+					temp.data[k] = data[i];
+					k++;
+					break;
+				}
+			}
+		}
+
+		return temp;
+	}
+
+	
+	bool operator<(Set& other) {
+		for (int i = 0; i < size; i++) {
+			bool found = false;
+			for (int j = 0; j < other.size; j++) {
+				if (data[i] == other.data[j]) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				return false;
+			}
+		}
+		return true;
+	}
+};
+
+int main() {
+	setlocale(LC_ALL, "Russian");
+
+	Set A(5);
+	Set B(5);
+
+	cout << "Множество A\n";
+	A.input();
+
+	cout << "Множество B\n";
+	B.input();
+
+	cout << "\nA = ";
+	A.show();
+
+	cout << "B = ";
+	B.show();
+
+	int x;
+	cout << "\nВведите число: ";
+	cin >> x;
+
+	if (A > x) {
+		cout << "Элемент принадлежит множеству A\n";
+	}
+	else {
+		cout << "Элемент НЕ принадлежит множеству A\n";
+	}
+
+	Set C = A * B;
+	cout << "\nПересечение множеств:\n";
+	C.show();
+
+	if (A < B) {
+		cout << "A является подмножеством B\n";
+	}
+	else {
+		cout << "A НЕ является подмножеством B\n";
+	}
+
+	system("pause");
+	return 0;
+}
