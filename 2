@@ -1,3 +1,124 @@
 #include "stdafx.h"
 #include <iostream>
 using namespace std;
+
+class matrix {
+protected:
+	int rows;
+	int cols;
+	int** data;
+public:
+	static int count;
+
+	matrix(int r = 2, int c = 2) {
+		rows = r;
+		cols = c;
+		data = new int*[rows];
+		for (int i = 0; i < rows; i++) {
+			data[i] = new int[cols];
+			for (int j = 0; j < cols; j++) {
+				data[i][j] = 0;
+			}
+		}
+		count += rows * cols;
+	}
+	virtual ~matrix() {
+		for (int i = 0; i < rows; i++) {
+			delete[] data[i];
+		}
+		delete[] data;
+		count -= rows * cols;
+	}
+	virtual void input() {
+		cout << "Введите элементы матрицы:\n";
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				cin >> data[i][j];
+			}
+		}
+	}
+	virtual void show() {
+		cout << "Введите элементы матрицы:\n";
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				cout << data[i][j] << " ";
+			}
+			cout << endl;
+		}
+	}
+	virtual int sum() {
+		int s = 0;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				s += data[i][j];
+			}
+		}
+		return s;
+	}
+};
+
+class SquareMatrix : public matrix {
+public:
+	SquareMatrix(int n = 2) : matrix(n, n) {
+	}
+	void show() override {
+		cout << "Квадратная матрицы:\n";
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				cout << data[i][j] << " ";
+			}
+			cout << endl;
+		}
+	}
+};
+
+class DiagonalMatrix : public matrix {
+public:
+	DiagonalMatrix(int n = 3) : matrix(n, n) {
+	}
+	void input() override {
+		cout << "Введите элементы диагонали:\n";
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				if (i == j) {
+					cin >> data[i][j];
+				}
+				else {
+					data[i][j] = 0;
+				}
+			}
+		}
+	}
+	void show() override {
+		cout << "Диагональная матрицы:\n";
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				cout << data[i][j] << " ";
+			}
+			cout << endl;
+		}
+	}
+};
+
+int matrix::count = 0;
+int main() {
+	setlocale(LC_ALL, "Russian");
+	matrix a(2, 3);
+	SquareMatrix b(2);
+	DiagonalMatrix c(3);
+	a.input();
+	b.input();
+	c.input();
+	matrix* arr[]{
+		&a, &b, &c
+	};
+	for (auto el : arr) {
+		el->show();
+		cout << "Сумма элементов: "
+			<< el->sum() << endl;
+		cout << endl;
+	}
+	cout << "Общее количество элементов: "
+		<< matrix::count << endl;
+	system("pause");
+}
